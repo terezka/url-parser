@@ -4,6 +4,7 @@ module UrlParser
         , (<?>)
         , Parser
         , QueryParser
+        , any
         , custom
         , customParam
         , int
@@ -28,7 +29,7 @@ module UrlParser
 
 # Path Parses
 
-@docs (</>), map, oneOf, top, custom
+@docs (</>), map, oneOf, top, any, custom
 
 
 # Query Parameter Parsers
@@ -113,6 +114,20 @@ s str =
                         [ State (next :: visited) rest params value ]
                     else
                         []
+
+
+{-| Get the rest of the url, regardless of what it is.
+-}
+any : Parser (String -> a) a
+any =
+    Parser <|
+        \{ visited, unvisited, params, value } ->
+            case unvisited of
+                [] ->
+                    []
+
+                rest ->
+                    [ State (visited ++ rest) [] params (value (String.join "/" rest)) ]
 
 
 {-| Create a custom path segment parser. Here is how it is used to define the
