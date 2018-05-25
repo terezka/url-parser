@@ -5,7 +5,7 @@ import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
 import Http
 import Navigation
-import UrlParser as Url exposing ((</>), (<?>), int, s, stringParam, top)
+import UrlParser as Url exposing ((</>), (<?>), any, int, s, stringParam, top)
 
 
 main =
@@ -41,6 +41,7 @@ type Route
     = Home
     | BlogList (Maybe String)
     | BlogPost Int
+    | BlogPage String
 
 
 route : Url.Parser (Route -> a) a
@@ -49,6 +50,7 @@ route =
         [ Url.map Home top
         , Url.map BlogList (s "blog" <?> stringParam "search")
         , Url.map BlogPost (s "blog" </> int)
+        , Url.map BlogPage (s "blog" </> any)
         ]
 
 
@@ -92,7 +94,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text "Links" ]
-        , ul [] (List.map viewLink [ "/", "/blog/", "/blog/42", "/blog/37", "/blog/?search=cats" ])
+        , ul [] (List.map viewLink [ "/", "/blog/", "/blog/42", "/blog/37", "/blog/?search=cats", "/blog/ok/more/url" ])
         , h1 [] [ text "History" ]
         , ul [] (List.map viewRoute model.history)
         ]
@@ -127,3 +129,6 @@ routeToString route =
 
         BlogPost id ->
             "show blog " ++ toString id
+
+        BlogPage parameters ->
+            "show blog: remaining url is " ++ parameters
