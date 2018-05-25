@@ -1,3 +1,7 @@
+# EXPERIMENTAL COPY OF `evancz/url-parser`
+
+Use at own risk.
+
 # URL Parser
 
 This library helps you turn URLs into nicely structured data.
